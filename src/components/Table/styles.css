@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.table {
+  border: 0.12em solid #333333;
+  max-width: 50em;
+}
+
+.line {
+  display: flex;
+}
+
+.black {
+  background: #333333;
+}
+
+.spot {
+  width: 6.25em;
+  height: 6.25em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item {
+  color: salmon;
+  width: 4em;
+  height: 4em;
+}
