@@ -8,7 +8,12 @@ export default function Table() {
   const allowDrop = () => {
     const e = window.event;
 
-    if (e.target.id.substring(0, 5) === 'piece') {
+    const hasChild = e.target.childNodes.length > 0;
+    const isSpot = e.target.id.substring(0, 4) === 'spot';
+
+    console.log(e.target.childNodes);
+
+    if (hasChild || !isSpot) {
       return;
     }
 
@@ -44,10 +49,6 @@ export default function Table() {
     return lines;
   };
 
-  const saveOnBeg = () => {
-    const e = window.event;
-  };
-
   const createSpots = (line) => {
     const spots = [];
 
@@ -55,7 +56,6 @@ export default function Table() {
       spots.push(
         <div
           id={`spot${line}${c}`}
-          draggable={false}
           key={`spot${line}${c}`}
           className={`spot ${(line + c) % 2 === 0 ? 'black' : 'white'}`}
           onDrop={() => drop()}

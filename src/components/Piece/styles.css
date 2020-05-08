@@ -1,0 +1,17 @@
+.piece-container {
+  width: 60%;
+  transition: 0.3s ease;
+}
+
+.piece-container:hover {
+  width: 66%;
+}
+
+.piece-container:actice {
+  width: 69%;
+}
+
+.piece-img {
+  width: 100%;
+  user-select: none;
+}
