@@ -1,25 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles.css';
+import Piece from '../Piece';
 
 export default function Table() {
+  const [posBeg, setPosBeg] = useState({});
+
   const allowDrop = () => {
     const e = window.event;
+
+    if (e.target.id.substring(0, 5) === 'piece') {
+      return;
+    }
 
     e.preventDefault();
   };
 
   const drag = () => {
     const e = window.event;
-
-    e.dataTransfer.setData('text', e.target.id);
+    setPosBeg({ id: e.path[1].id });
+    e.fathers = e.dataTransfer.setData('text', e.target.id);
   };
 
   const drop = async () => {
     const e = window.event;
-
     e.preventDefault();
-    const data = await e.dataTransfer.getData('text');
-    e.target.appendChild(document.getElementById(data));
+
+    if (posBeg.id !== e.path[1].id) {
+      const data = await e.dataTransfer.getData('text');
+      e.target.appendChild(document.getElementById(data));
+    }
   };
 
   const createTable = () => {
@@ -35,17 +44,29 @@ export default function Table() {
     return lines;
   };
 
+  const saveOnBeg = () => {
+    const e = window.event;
+  };
+
   const createSpots = (line) => {
     const spots = [];
 
-    for (let s = 0; s < 8; s++) {
+    for (let c = 0; c < 8; c++) {
       spots.push(
         <div
-          key={`spot${s}${line}`}
-          className={`spot ${(line + s) % 2 === 0 ? 'black' : 'white'}`}
+          id={`spot${line}${c}`}
+          draggable={false}
+          key={`spot${line}${c}`}
+          className={`spot ${(line + c) % 2 === 0 ? 'black' : 'white'}`}
           onDrop={() => drop()}
           onDragOver={() => allowDrop()}
-        ></div>
+        >
+          {line <= 1 || line >= 6 ? (
+            <Piece line={line} column={c} drag={() => drag()} />
+          ) : (
+            ''
+          )}
+        </div>
       );
     }
 
