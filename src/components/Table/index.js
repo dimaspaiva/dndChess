@@ -5,13 +5,16 @@ import Piece from '../Piece';
 export default function Table() {
   const [posBeg, setPosBeg] = useState({});
 
+  const pieceMove = (item) => {
+    console.log(item);
+    console.log('xD');
+  };
+
   const allowDrop = () => {
     const e = window.event;
 
     const hasChild = e.target.childNodes.length > 0;
     const isSpot = e.target.id.substring(0, 4) === 'spot';
-
-    console.log(e.target.childNodes);
 
     if (hasChild || !isSpot) {
       return;
@@ -20,8 +23,11 @@ export default function Table() {
     e.preventDefault();
   };
 
-  const drag = () => {
+  const drag = (parsers) => {
     const e = window.event;
+
+    console.log(parsers);
+
     setPosBeg({ id: e.path[1].id });
     e.fathers = e.dataTransfer.setData('text', e.target.id);
   };
@@ -59,10 +65,15 @@ export default function Table() {
           key={`spot${line}${c}`}
           className={`spot ${(line + c) % 2 === 0 ? 'black' : 'white'}`}
           onDrop={() => drop()}
-          onDragOver={() => allowDrop()}
+          onDragOver={() => allowDrop(line, c)}
         >
           {line <= 1 || line >= 6 ? (
-            <Piece line={line} column={c} drag={() => drag()} />
+            <Piece
+              line={line}
+              column={c}
+              drag={() => drag()}
+              passData={() => pieceMove()}
+            />
           ) : (
             ''
           )}

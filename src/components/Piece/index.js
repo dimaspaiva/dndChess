@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import peao from './peao.png';
+import peao from '../../piecesImgs/peao.png';
 
 import './styles.css';
 
-export default function Piece({ line, column, drag }) {
-  const [piece, setPiece] = useState({ name: '', img: '' });
+export default function Piece({ line, column, drag, passData }) {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setPosition({ x: line, y: column });
+  }, [line, column]);
 
   return (
     <div
@@ -14,18 +18,19 @@ export default function Piece({ line, column, drag }) {
       onDragStart={() => drag()}
       id={`p-${line}${column}`}
     >
-      <img
-        className="piece-img"
-        draggable={false}
-        id={`p-img-${line}${column}`}
-        alt="peão"
-        src={peao}
-      />
+      <img className="piece-img" draggable={false} alt="peão" src={peao} />
     </div>
   );
 }
 
 /**
- *    Obs
- *  After creation data dont update
+ *   Pieces characteristics
+ *  moves
+ *   - type
+ *   - size
+ *   - hover
+ *
+ *  position
+ *   - x
+ *   - y
  */
