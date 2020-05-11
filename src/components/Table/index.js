@@ -3,12 +3,13 @@ import './styles.css';
 import Piece from '../Piece';
 
 export default function Table() {
-  const [posBeg, setPosBeg] = useState({});
-
-  const pieceMove = (item) => {
-    console.log(item);
-    console.log('xD');
-  };
+  const [piece, setPiece] = useState({
+    id: 0,
+    x: 0,
+    y: 0,
+    type: '',
+    setPosition: '',
+  });
 
   const allowDrop = () => {
     const e = window.event;
@@ -23,23 +24,32 @@ export default function Table() {
     e.preventDefault();
   };
 
-  const drag = (parsers) => {
+  const drag = ({ x = 0, y = 0, setPosition }) => {
     const e = window.event;
 
-    console.log(parsers);
-
-    setPosBeg({ id: e.path[1].id });
-    e.fathers = e.dataTransfer.setData('text', e.target.id);
+    if (!piece.id || x !== piece.x || y !== piece.y) {
+      console.log(setPosition);
+      setPiece({ id: e.path[1].id, x, y, setPosition });
+      e.fathers = e.dataTransfer.setData('text', e.target.id);
+    }
   };
 
   const drop = async () => {
     const e = window.event;
     e.preventDefault();
 
-    if (posBeg.id !== e.path[1].id) {
+    const canMove = `spot${piece.x + 1}${piece.y}` === e.target.id;
+    const isSame = piece.id === e.path[0].id;
+
+    console.log(piece.id, e.path[0].id);
+    console.log(`spot${piece.x + 1}${piece.y}`, e.target.id);
+
+    if (canMove && !isSame) {
       const data = await e.dataTransfer.getData('text');
+      piece.setPosition({ ...piece, x: piece.x + 1 });
       e.target.appendChild(document.getElementById(data));
     }
+    setPiece({ id: 0, x: 0, y: 0, type: '', func: '' });
   };
 
   const createTable = () => {
@@ -67,13 +77,8 @@ export default function Table() {
           onDrop={() => drop()}
           onDragOver={() => allowDrop(line, c)}
         >
-          {line <= 1 || line >= 6 ? (
-            <Piece
-              line={line}
-              column={c}
-              drag={() => drag()}
-              passData={() => pieceMove()}
-            />
+          {line <= 1 ? (
+            <Piece type="white" line={line} column={c} drag={drag} />
           ) : (
             ''
           )}

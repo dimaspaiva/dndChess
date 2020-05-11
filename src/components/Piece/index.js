@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import peao from '../../piecesImgs/peao.png';
+import whitePawn from '../../piecesImgs/peaoBranco.png';
+import blackPawn from '../../piecesImgs/peaoPreto.png';
 
 import './styles.css';
 
-export default function Piece({ line, column, drag, passData }) {
+export default function Piece({ line, column, drag, type }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -15,22 +16,15 @@ export default function Piece({ line, column, drag, passData }) {
     <div
       className="piece-container"
       draggable={true}
-      onDragStart={() => drag()}
+      onDragStart={() => drag({ ...position, type, setPosition })}
       id={`p-${line}${column}`}
     >
-      <img className="piece-img" draggable={false} alt="peão" src={peao} />
+      <img
+        className="piece-img"
+        draggable={false}
+        alt="peão"
+        src={type === 'white' ? whitePawn : blackPawn}
+      />
     </div>
   );
 }
-
-/**
- *   Pieces characteristics
- *  moves
- *   - type
- *   - size
- *   - hover
- *
- *  position
- *   - x
- *   - y
- */
