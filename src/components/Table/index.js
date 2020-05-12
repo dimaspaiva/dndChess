@@ -3,13 +3,16 @@ import './styles.css';
 import Piece from '../Piece';
 
 export default function Table() {
-  const [piece, setPiece] = useState({
+  const startPiece = {
     id: 0,
     x: 0,
     y: 0,
+    hasMoved: false,
     type: '',
     setPosition: '',
-  });
+  };
+
+  const [piece, setPiece] = useState(startPiece);
 
   const allowDrop = () => {
     const e = window.event;
@@ -24,12 +27,12 @@ export default function Table() {
     e.preventDefault();
   };
 
-  const drag = ({ x = 0, y = 0, setPosition }) => {
+  const drag = ({ x = 0, y = 0, setPosition, hasMoved }) => {
     const e = window.event;
 
     if (!piece.id || x !== piece.x || y !== piece.y) {
-      console.log(setPosition);
-      setPiece({ id: e.path[1].id, x, y, setPosition });
+      console.log(hasMoved);
+      setPiece({ id: e.path[1].id, x, y, setPosition, hasMoved });
       e.fathers = e.dataTransfer.setData('text', e.target.id);
     }
   };
@@ -38,18 +41,25 @@ export default function Table() {
     const e = window.event;
     e.preventDefault();
 
-    const canMove = `spot${piece.x + 1}${piece.y}` === e.target.id;
+    const canMove =
+      `spot${piece.x + 1}${piece.y}` === e.target.id ||
+      (!piece.hasMoved && `spot${piece.x + 2}${piece.y}` === e.target.id);
+
     const isSame = piece.id === e.path[0].id;
 
-    console.log(piece.id, e.path[0].id);
-    console.log(`spot${piece.x + 1}${piece.y}`, e.target.id);
+    const distanceX = Number(e.path[0].id.substring(4, 5));
 
     if (canMove && !isSame) {
       const data = await e.dataTransfer.getData('text');
-      piece.setPosition({ ...piece, x: piece.x + 1 });
+      piece.setPosition({
+        ...piece,
+        x: piece.x + Math.abs(distanceX - piece.x),
+        hasMoved: true,
+      });
       e.target.appendChild(document.getElementById(data));
     }
-    setPiece({ id: 0, x: 0, y: 0, type: '', func: '' });
+
+    setPiece(startPiece);
   };
 
   const createTable = () => {

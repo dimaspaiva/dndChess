@@ -6,11 +6,15 @@ import blackPawn from '../../piecesImgs/peaoPreto.png';
 import './styles.css';
 
 export default function Piece({ line, column, drag, type }) {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0,
+    hasMoved: false,
+  });
 
   useEffect(() => {
-    setPosition({ x: line, y: column });
-  }, [line, column]);
+    setPosition({ ...position, x: line, y: column });
+  }, []);
 
   return (
     <div
